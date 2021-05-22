@@ -1,0 +1,14 @@
+plugins {
+    id 'eclipse'
+    id 'java'
+}
+
+repositories {
+    mavenCentral()
+    maven { url "https://jitpack.io" }
+}
+
+dependencies {
+    implementation 'com.google.code.gson:gson:2.8.6'
+    implementation 'com.github.TheDutchMC:HttpLib:1.1'
+}
