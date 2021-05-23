@@ -1,8 +1,23 @@
+[![Maven Central](https://img.shields.io/maven-central/v/dev.array21/espocrm-api-client.svg?label=Maven%20Central)](https://search.maven.org/search?q=g:%22dev.array21%22%20AND%20a:%22espocrm-api-client%22)
+
 # espocrm-java
 An EspoCRM API client in Java
 
 ## Getting started
-//TODO
+The client can be found on [MavenCentral](https://search.maven.org/artifact/dev.array21/espocrm-api-client)  
+Maven:
+```xml
+<dependency>
+  <groupId>dev.array21</groupId>
+  <artifactId>espocrm-api-client</artifactId>
+  <version>VERSION</version>
+</dependency>
+```
+
+Gradle:
+```groovy
+implementation 'dev.array21:espocrm-api-client:VERSION'
+```
 
 ## Usage
 ```java
