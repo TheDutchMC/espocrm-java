@@ -2,7 +2,7 @@
 An EspoCRM API client in Java
 
 ## Getting started
-//TOOD
+//TODO
 
 ## Usage
 ```java
