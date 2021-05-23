@@ -24,19 +24,44 @@ import nl.thedutchmc.httplib.Http.MediaFormat;
 import nl.thedutchmc.httplib.Http.RequestMethod;
 import nl.thedutchmc.httplib.Http.ResponseObject;
 
+/**
+ * A client for the EspoCRM API
+ * @author Tobias de Bruijn
+ * @since 1.0.0
+ */
 public class EspoApiClient {
 	protected String url, username, password, apiKey, secretKey;
-	private final String urlPath = "";
+	private final String urlPath = "/api/v1/";
 	private final Gson gson = new Gson();
 	
 	private String normalizeUrl(String action) {
 		return String.format("%s%s%s", this.url, this.urlPath, action);
 	}
 	
+	/**
+	 * Send a GET request to EspoCRM
+	 * @param action The action (i.e URL path)
+	 * @param params The parameters to use
+	 * @return Returns the JSON response
+	 * @throws InvalidKeyException Thrown only when using HMAC authorization, if the key is invalid
+	 * @throws IOException
+	 * @throws RequestException
+	 */
 	public String requestGet(String action, Params params) throws InvalidKeyException, IOException, RequestException {
 		return this.request(Method.GET, action, params, null);
 	}
 	
+	/**
+	 * Send a POST, PUT or DELETE request to EspoCRM
+	 * @param <T> The type of payload, this will be serialized using Google's GSON
+	 * @param method The request method
+	 * @param action The action (i.e URL path)
+	 * @param payload The payload to send along with the request. This will be serialized using Google's GSON
+	 * @return Returns the JSON response
+	 * @throws InvalidKeyException Thrown only when using HMAC authorization, if the key is invalid
+	 * @throws IOException
+	 * @throws RequestException
+	 */
 	public <T> String request(Method method, String action, T payload) throws InvalidKeyException, IOException, RequestException {
 		return this.request(method, action, null, payload);
 	}
@@ -69,7 +94,7 @@ public class EspoApiClient {
 		}
 		
 		if(responseObject.getResponseCode() != 200) {
-			throw new RequestException(responseObject.getConnectionMessage());
+			throw new RequestException(responseObject.getResponseCode(), responseObject.getConnectionMessage());
 		}
 		
 		return responseObject.getMessage();
