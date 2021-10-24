@@ -19,10 +19,10 @@ import com.google.gson.Gson;
 import dev.array21.espocrm.Serializer;
 import dev.array21.espocrm.types.Method;
 import dev.array21.espocrm.types.Params;
-import nl.thedutchmc.httplib.Http;
-import nl.thedutchmc.httplib.Http.MediaFormat;
-import nl.thedutchmc.httplib.Http.RequestMethod;
-import nl.thedutchmc.httplib.Http.ResponseObject;
+import dev.array21.httplib.Http;
+import dev.array21.httplib.Http.MediaFormat;
+import dev.array21.httplib.Http.RequestMethod;
+import dev.array21.httplib.Http.ResponseObject;
 
 /**
  * A client for the EspoCRM API

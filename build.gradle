@@ -1,82 +1,84 @@
 plugins {
-    id 'eclipse'
-    id 'java'
-    id 'maven'
+	id 'eclipse'
+	id 'java'
 	id 'signing'
+	id 'maven-publish'
 }
 
 group = 'dev.array21'
-version = '1.0.0'
+version = '1.0.1'
 
 repositories {
-    mavenCentral()
-    maven { url "https://jitpack.io" }
+	mavenCentral()
 }
 
 dependencies {
-    implementation 'com.google.code.gson:gson:2.8.6'
-    implementation 'com.github.TheDutchMC:HttpLib:1.1'
+	implementation 'com.google.code.gson:gson:2.8.6'
+	implementation 'dev.array21:httplib:1.2.2'
 }
 
+javadoc.options.addStringOption('Xdoclint:none', '-quiet')
+
 task javadocJar(type: Jar) {
-    classifier = 'javadoc'
-    from javadoc
+	classifier = 'javadoc'
+	from javadoc
 }
 
 task sourcesJar(type: Jar) {
-    classifier = 'sources'
-    from sourceSets.main.allSource
+	classifier = 'sources'
+	from sourceSets.main.allSource
 }
 
-artifacts {
-    archives javadocJar, sourcesJar
+publishing {
+	repositories {
+		maven {
+			name = "ossrh"
+			url = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+			credentials {
+				username = findProperty('ossrhUsername')
+				password = findProperty('ossrhPassword')
+			}
+		}
+	}
+
+	publications {
+		mavenJava(MavenPublication) {
+			from components.java
+			artifact sourcesJar
+			artifact javadocJar
+			
+			pom {
+				name = 'EspoCRM API Client'
+				artifactId = 'espocrm-api-client'
+				packaging = 'jar'
+				description = 'EspoCRM API client for Java'
+				url = 'https://github.com/TheDutchMC/espocrm-java'
+			
+				scm {
+					connection = 'scm:git:git://github.com/TheDutchMC/espocrm-java.git'
+					developerConnection =  'scm:git:ssh://github.com:TheDutchMC/espocrm-java.git'
+					url = 'https://github.com/TheDutchMC/espocrm-java/tree/master'
+				}
+		
+				licenses {
+					license {
+						name =  'The Apache License, Version 2.0'
+						url = 'http://www.apache.org/licenses/LICENSE-2.0.txt'
+					}
+				}
+		
+				developers {
+					developer {
+						id = 'tobiasdebruijn'
+						name = 'Tobias de Bruijn'
+						email = 't.debruijn@array21.dev'
+					}
+				}
+			}
+		}
+	}
 }
 
 signing {
-    sign configurations.archives
-}
-
-uploadArchives {
-  repositories {
-    mavenDeployer {
-      beforeDeployment { MavenDeployment deployment -> signing.signPom(deployment) }
-
-      repository(url: "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-        authentication(userName: findProperty('ossrhUsername'), password: findProperty('ossrhPassword'))
-      }
-
-      snapshotRepository(url: "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-        authentication(userName: ossrhUsername, password: ossrhPassword)
-      }
-
-      pom.project {
-        name 'EspoCRM API Client'
-        artifactId = 'espocrm-api-client'
-        packaging 'jar'
-        description 'EspoCRM API client for Java'
-        url 'https://github.com/TheDutchMC/espocrm-java'
-	
-		scm {
-			connection 'scm:git:git://github.com/TheDutchMC/espocrm-java.git'
-			developerConnection 'scm:git:ssh://github.com:TheDutchMC/espocrm-java.git'
-			url 'https://github.com/TheDutchMC/espocrm-java/tree/master'
-		}
-
-        licenses {
-          license {
-            name 'The Apache License, Version 2.0'
-            url 'http://www.apache.org/licenses/LICENSE-2.0.txt'
-          }
-        }
-
-        developers {
-          developer {
-            id 'tobiasdebruijn'
-            name 'Tobias de Bruijn'
-            email 't.debruijn@array21.dev'
-          }
-        }
-      }
-    }
-  }
+	sign publishing.publications.mavenJava
 }
