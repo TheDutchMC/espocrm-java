@@ -67,9 +67,9 @@ public class EspoApiClient {
 	}
 	
 	private <T> String request(Method method, String action, Params params, T payload) throws InvalidKeyException, IOException, RequestException {
-		String url = normalizeUrl(this.url);
+		String url = normalizeUrl(action);
 		
-		if(params != null && method == Method.POST) {
+		if(params != null && method != Method.POST) {
 			url = String.format("%s?%s", url, Serializer.serialize(params));
 		}
 		
@@ -87,6 +87,8 @@ public class EspoApiClient {
 		}
 		
 		ResponseObject responseObject;
+		
+		//TODO Test for the DELETE endpoint
 		if(payload != null && method != Method.GET) {
 			responseObject = new Http().makeRequest(toRequestMethod(method), url, null, MediaFormat.JSON, this.gson.toJson(payload), headers);
 		} else {
@@ -134,12 +136,18 @@ public class EspoApiClient {
 		return hmacAuthorization;
 	}
 	
+	/**
+	 * Convert a byte[] to a Byte[]
+	 * @param array The input byte[]
+	 * @return The Byte[] output. Returns null if the input array is null
+	 */
     private static Byte[] toObject(final byte[] array) {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
             return new Byte[0];
         }
+        
         final Byte[] result = new Byte[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = Byte.valueOf(array[i]);
@@ -147,12 +155,18 @@ public class EspoApiClient {
         return result;
     }
     
+    /**
+     * Convert a Byte[] to a byte[]
+     * @param array The input Byte[]
+     * @return The output byte[]. Returns null if the provided input is null
+     */
     private static byte[] toPrimitive(final Byte[] array) {
         if (array == null) {
             return null;
         } else if (array.length == 0) {
             return new byte[0];
         }
+        
         final byte[] result = new byte[array.length];
         for (int i = 0; i < array.length; i++) {
             result[i] = array[i].byteValue();
@@ -160,9 +174,14 @@ public class EspoApiClient {
         return result;
     }
     
+    /**
+     * Convert our {@link Method} to HttpLib's {@link RequestMethod}
+     * @param method The Method
+     * @return The associated RequestMethod, or null if the input does not map to a RequestMethod
+     */
     private RequestMethod toRequestMethod(Method method) {
     	switch(method) {
-	    	case GET:return RequestMethod.GET;
+	    	case GET: return RequestMethod.GET;
 			case DELETE: return RequestMethod.DELETE;
 			case POST: return RequestMethod.POST;
 			case PUT: return RequestMethod.PUT;
