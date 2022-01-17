@@ -22,28 +22,5 @@ steps:
     webhook:
       from_secret: discord_webhook
     username: Drone CI/CD - espocrm-java - build JDK 17
-#---
-#kind: pipeline
-#type: docker
-#name: build-jdk11
-
-#trigger:
-#  event:
-#  - cron
-#  - push
-#  - pull_request
-#  - tag
-
-#steps:
-#- name: Build with Gradle
-#  image: gradle:7.2.0-jdk11
-#  commands:
-#  - 'chmod +x gradlew'
-#  - './gradlew build'
-
-#- name: Slack notifications
-#  image: plugins/slack
-#  settings:
-#    webhook:
-#      from_secret: discord_webhook
-#    username: Drone CI/CD - espocrm-java - build JDK 11
+  when:
+    status: [ failure ]
